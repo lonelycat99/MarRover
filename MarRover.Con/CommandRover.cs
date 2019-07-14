@@ -62,7 +62,7 @@ namespace MarRover.Con
             }
         }
 
-        public void CommandRoverMoving(int direction, char[] commands, Positions setPositionRover, Size sizeMap)
+        public int CommandRoverMoving(int direction, char[] commands, Positions setPositionRover, Size sizeMap)
         {
             var getDirection = direction;
             foreach (var command in commands)
@@ -82,6 +82,7 @@ namespace MarRover.Con
                         break;
                 }
             }
+            return getDirection;
         }
 
         public int RoverTurnRight(int getDirection)
@@ -167,13 +168,13 @@ namespace MarRover.Con
             return errorTxt;
         }
 
-        public Positions ProcessingControl(CommandRover sut, string firstRover, string firstCommandRover, Size sizeMap)
+        public Positions ProcessingControl(string firstRover, string firstCommandRover, Size sizeMap)
         {
-            var setPositionRover = sut.SetPositionRover(firstRover);
-            int direction = sut.ConvertDirectionToInt(setPositionRover.Direction);
-            char[] commandsRover = sut.SetCommands(firstCommandRover);
-            sut.CommandRoverMoving(direction, commandsRover, setPositionRover, sizeMap);
-            sut.ConvertDirectionToString(direction, setPositionRover);
+            var setPositionRover = SetPositionRover(firstRover);
+            int direction = ConvertDirectionToInt(setPositionRover.Direction);
+            char[] commandsRover = SetCommands(firstCommandRover);
+            var latedDirection = CommandRoverMoving(direction, commandsRover, setPositionRover, sizeMap);
+            ConvertDirectionToString(latedDirection, setPositionRover);
             return setPositionRover;
         }
     }

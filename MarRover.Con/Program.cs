@@ -34,7 +34,7 @@ namespace MarRover.Con
             }
             else
             {
-                Positions setPositionRover1 = control.ProcessingControl(control, firstRover, firstCommandRover, sizeMap);
+                Positions setPositionRover1 = control.ProcessingControl(firstRover, firstCommandRover, sizeMap);
                 System.Console.WriteLine($"{setPositionRover1.Coordinate_X} {setPositionRover1.Coordinate_Y} {setPositionRover1.Direction}");
                 if (!checkPositionStartRover2 || !checkDirectionInputRover2)
                 {
@@ -43,7 +43,7 @@ namespace MarRover.Con
                 }
                 else
                 {
-                    Positions setPositionRover2 = control.ProcessingControl(control, secondRover, secondCommandRover, sizeMap);
+                    Positions setPositionRover2 = control.ProcessingControl(secondRover, secondCommandRover, sizeMap);
                     System.Console.WriteLine($"{setPositionRover2.Coordinate_X} {setPositionRover2.Coordinate_Y} {setPositionRover2.Direction}");
 
                 }
