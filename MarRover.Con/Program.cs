@@ -40,7 +40,7 @@ namespace MarRover.Con
                 var checkPositionStartRover = rover.IsCheckFirstPositionOfRover(sizeMap, dataRovers[i].Input_Position);
                 var checkDirectionInputRover = rover.IsCheckDirection(dataRovers[i].Input_Position);
                 var checkeDataRover = rover.IsCheckCaseError(checkPositionStartRover, checkDirectionInputRover, setPositionRover);
-               
+
                 if (string.IsNullOrEmpty(checkeDataRover.ErrorText))
                 {
                     //Convert direction to number.

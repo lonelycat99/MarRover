@@ -29,9 +29,9 @@ namespace MarRover.Con
             };
             return setPosition;
         }
-
+        
         public char[] SetCommands(string commandRover) => commandRover.ToCharArray();
-
+        
         public int ConvertDirectionToInt(string position)
         {
             //Set Direction.
@@ -44,7 +44,7 @@ namespace MarRover.Con
                 default: return 0;
             }
         }
-
+        
         public Rovers ConvertDirectionToString(int direction, Rovers positionRover)
         {
             switch (direction)
@@ -66,14 +66,14 @@ namespace MarRover.Con
             }
             return positionRover;
         }
-
+        
         public bool IsCheckFirstPositionOfRover(Size sizeMap, string dataRover)
         {
             var checkPositionStartRover = SetPositionRover(dataRover);
             return ((checkPositionStartRover.Coordinate_X >= 0 && checkPositionStartRover.Coordinate_X <= sizeMap.X_Axis)
                 && (checkPositionStartRover.Coordinate_Y >= 0 && checkPositionStartRover.Coordinate_Y <= sizeMap.Y_Axis));
         }
-
+        
         public bool IsCheckDirection(string dataRover)
         {
             var checkPositionStartRover = SetPositionRover(dataRover);
@@ -83,7 +83,7 @@ namespace MarRover.Con
                 || checkPositionStartRover.Direction.Equals("W"))
                 ? true : false;
         }
-
+        
         public Rovers IsCheckLastedPositionOfRover(Size sizeMap, Rovers dataRover)
         {
             if ((dataRover.Coordinate_X < 0) || (dataRover.Coordinate_Y < 0) ||
@@ -93,7 +93,7 @@ namespace MarRover.Con
             }
             return dataRover;
         }
-
+        
         public Rovers IsCheckCaseError(bool checkPositionStartRover, bool checkDirectionInputRover, Rovers positionRover)
         {
             if (!checkPositionStartRover && !checkDirectionInputRover)
@@ -110,7 +110,7 @@ namespace MarRover.Con
             }
             return positionRover;
         }
-
+        
         public int CommandRoverMoving(int direction, char[] commands, Rovers setPositionRover, Size sizeMap)
         {
             var getDirection = direction;
@@ -133,19 +133,19 @@ namespace MarRover.Con
             }
             return getDirection;
         }
-
+        
         public int RoverTurnRight(int getDirection)
         {
             getDirection = ((getDirection + 1) > (int)DirectionsRover.Directions.W) ? (int)DirectionsRover.Directions.N : getDirection + 1;
             return getDirection;
         }
-
+        
         public int RoverTurnLeft(int getDirection)
         {
             getDirection = ((getDirection - 1) < (int)DirectionsRover.Directions.N) ? (int)DirectionsRover.Directions.W : getDirection - 1;
             return getDirection;
         }
-
+        
         public void RoverMoving(Rovers setPositionRover, int getDirection, Size sizeMap)
         {
             if ((setPositionRover.Coordinate_X <= sizeMap.X_Axis) && (setPositionRover.Coordinate_Y <= sizeMap.Y_Axis))
@@ -169,7 +169,5 @@ namespace MarRover.Con
                 }
             }
         }
-
-
     }
 }
