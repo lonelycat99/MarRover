@@ -11,13 +11,15 @@ namespace MarRover.Test
     {
         [Theory]
         [MemberData(nameof(DataOfControlRover))]
-        // [InlineData("5 5", "3 1 B", "LMMMRM", "Wrong Input Rover1's Direction")]
-        // [InlineData("5 5", "4 4 S", "RMRMM", "The beginning of the Rover1 is incorrect.")]
-        public void ProcessingControlTest(string size, string position, string command, Positions expected)
+        public void ProcessingControlTest(string size, string position, string command, Rovers expected)
         {
             var sut = new CommandRover();
             var setSize = sut.SetSize(size);
-            var result = sut.ProcessingControl(position, command, setSize);
+            var setPositionRover = sut.SetPositionRover(position);
+            var direction = sut.ConvertDirectionToInt(setPositionRover.Direction);
+            var commandRover = sut.SetCommands(command);
+            var directionNow = sut.CommandRoverMoving(direction, commandRover, setPositionRover, setSize);
+            var result = sut.ConvertDirectionToString(directionNow, setPositionRover);
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -26,7 +28,7 @@ namespace MarRover.Test
                 "5 5",
                 "1 2 N",
                 "LMLMLMLMM",
-                new Positions
+                new Rovers
                 {
                     Coordinate_X = 1,
                     Coordinate_Y = 3,
@@ -37,7 +39,7 @@ namespace MarRover.Test
                 "5 5",
                 "3 3 E",
                 "MMRMMRMRRM",
-                new Positions
+                new Rovers
                 {
                     Coordinate_X = 5,
                     Coordinate_Y = 1,
@@ -48,7 +50,7 @@ namespace MarRover.Test
                 "5 5",
                 "3 1 W",
                 "MRMMLMRMMRR",
-                new Positions
+                new Rovers
                 {
                     Coordinate_X = 1,
                     Coordinate_Y = 5,
@@ -59,7 +61,7 @@ namespace MarRover.Test
                 "5 5",
                 "0 0 E",
                 "MLMMMRMMRMMRMRMMMLMR",
-                new Positions
+                new Rovers
                 {
                     Coordinate_X = 1,
                     Coordinate_Y = 4,

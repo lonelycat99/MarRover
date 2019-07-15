@@ -1,51 +1,71 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using MarRover.Con.Models;
 
 namespace MarRover.Con
 {
     class Program
     {
+        public static List<DataRovers> dataRovers = new List<DataRovers>();
         static void Main(string[] args)
         {
-            var control = new CommandRover();
+            var rover = new CommandRover();
 
+            System.Console.Write("Input the number of Rover: ");
+            var number = Convert.ToInt32(Console.ReadLine());
             System.Console.Write("Input Coordinates: ");
             var size = Console.ReadLine();
-            System.Console.Write("Input First Rover's Position: ");
-            var firstRover = Console.ReadLine();
-            System.Console.Write("Input Command: ");
-            var firstCommandRover = Console.ReadLine();
-            System.Console.Write("Input Second Rover's Position: ");
-            var secondRover = Console.ReadLine();
-            System.Console.Write("Input Command: ");
-            var secondCommandRover = Console.ReadLine();
 
-            var sizeMap = control.SetSize(size);
-
-            var checkPositionStartRover1 = control.CheckFirstPositionOfRover(sizeMap, firstRover);
-            var checkPositionStartRover2 = control.CheckFirstPositionOfRover(sizeMap, secondRover);
-            var checkDirectionInputRover1 = control.CheckDirection(firstRover);
-            var checkDirectionInputRover2 = control.CheckDirection(secondRover);
-
-            if (!checkPositionStartRover1 || !checkDirectionInputRover1)
+            for (var i = 0; i < number; i++)
             {
-                string errorTxt = control.CheckCaseError(checkPositionStartRover1, checkDirectionInputRover1);
-                System.Console.WriteLine(errorTxt);
-            }
-            else
-            {
-                Positions setPositionRover1 = control.ProcessingControl(firstRover, firstCommandRover, sizeMap);
-                System.Console.WriteLine($"{setPositionRover1.Coordinate_X} {setPositionRover1.Coordinate_Y} {setPositionRover1.Direction}");
-                if (!checkPositionStartRover2 || !checkDirectionInputRover2)
+                System.Console.Write($"Input Rover's Position{i + 1}: ");
+                var roverPosition = Console.ReadLine();
+                System.Console.Write("Input Command: ");
+                var commandRover = Console.ReadLine();
+
+                dataRovers.Add(new DataRovers
                 {
-                    string errorTxt = control.CheckCaseError(checkPositionStartRover2, checkDirectionInputRover2);
-                    System.Console.WriteLine(errorTxt);
+                    Input_Position = roverPosition,
+                    Input_Command = commandRover
+                });
+            }
+
+            for (int i = 0; i < dataRovers.Count; i++)
+            {
+                var sizeMap = rover.SetSize(size);
+                var setPositionRover = rover.SetPositionRover(dataRovers[i].Input_Position);
+
+                //Check first position and direction of Rover.
+                var checkPositionStartRover = rover.IsCheckFirstPositionOfRover(sizeMap, dataRovers[i].Input_Position);
+                var checkDirectionInputRover = rover.IsCheckDirection(dataRovers[i].Input_Position);
+                var checkeDataRover = rover.IsCheckCaseError(checkPositionStartRover, checkDirectionInputRover, setPositionRover);
+               
+                if (string.IsNullOrEmpty(checkeDataRover.ErrorText))
+                {
+                    //Convert direction to number.
+                    int direction = rover.ConvertDirectionToInt(checkeDataRover.Direction);
+
+                    //Split control string to char array.
+                    char[] commandsRover = rover.SetCommands(dataRovers[i].Input_Command);
+
+                    //Rover's movement.
+                    var directionNow = rover.CommandRoverMoving(direction, commandsRover, checkeDataRover, sizeMap);
+                    var lastedPosition = rover.ConvertDirectionToString(directionNow, checkeDataRover);
+
+                    //Check the last position of Rover on plateau
+                    var result = rover.IsCheckLastedPositionOfRover(sizeMap, lastedPosition);
+
+                    //Display Result.
+                    var displayResult = (string.IsNullOrEmpty(result.ErrorText)) ?
+                        $"{result.Coordinate_X} {result.Coordinate_Y} {result.Direction}" :
+                        $"{result.ErrorText}";
+                    System.Console.WriteLine(displayResult);
                 }
                 else
                 {
-                    Positions setPositionRover2 = control.ProcessingControl(secondRover, secondCommandRover, sizeMap);
-                    System.Console.WriteLine($"{setPositionRover2.Coordinate_X} {setPositionRover2.Coordinate_Y} {setPositionRover2.Direction}");
-
+                    System.Console.WriteLine(checkeDataRover.ErrorText);
+                    i += 1;
                 }
             }
         }

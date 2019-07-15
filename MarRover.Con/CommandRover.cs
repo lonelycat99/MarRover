@@ -7,7 +7,7 @@ namespace MarRover.Con
     {
         public Size SetSize(string size)
         {
-            //Set size
+            //Set size.
             var dataSize = size.Split(" ");
             var setSize = new Size
             {
@@ -17,11 +17,11 @@ namespace MarRover.Con
             return setSize;
         }
 
-        public Positions SetPositionRover(string firstRover)
+        public Rovers SetPositionRover(string dataRover)
         {
-            //Set Rover's Position
-            var dataPosition = firstRover.Split(" ");
-            var setPosition = new Positions
+            //Set Rover's Position.
+            var dataPosition = dataRover.Split(" ");
+            var setPosition = new Rovers
             {
                 Coordinate_X = Convert.ToInt32(dataPosition[0]),
                 Coordinate_Y = Convert.ToInt32(dataPosition[1]),
@@ -30,39 +30,88 @@ namespace MarRover.Con
             return setPosition;
         }
 
-        public bool CheckFirstPositionOfRover(Size sizeMap, string firstRover)
-        {
-            var checkPositionStartRover = SetPositionRover(firstRover);
-            return ((checkPositionStartRover.Coordinate_X <= sizeMap.X_Axis) && (checkPositionStartRover.Coordinate_Y <= sizeMap.Y_Axis));
-        }
+        public char[] SetCommands(string commandRover) => commandRover.ToCharArray();
 
-        public bool CheckDirection(string firstRover)
+        public int ConvertDirectionToInt(string position)
         {
-            var checkPositionStartRover = SetPositionRover(firstRover);
-            return (checkPositionStartRover.Direction.Equals("N") || checkPositionStartRover.Direction.Equals("E") || checkPositionStartRover.Direction.Equals("S") || checkPositionStartRover.Direction.Equals("W")) ? true : false;
-        }
-
-        public void ConvertDirectionToString(int direction, Positions setPositionRover)
-        {
-            if (direction == 1)
+            //Set Direction.
+            switch (position)
             {
-                setPositionRover.Direction = DirectionsRover.Directions.N.ToString();
-            }
-            if (direction == 2)
-            {
-                setPositionRover.Direction = DirectionsRover.Directions.E.ToString();
-            }
-            if (direction == 3)
-            {
-                setPositionRover.Direction = DirectionsRover.Directions.S.ToString();
-            }
-            if (direction == 4)
-            {
-                setPositionRover.Direction = DirectionsRover.Directions.W.ToString();
+                case "N": return (int)DirectionsRover.Directions.N;
+                case "E": return (int)DirectionsRover.Directions.E;
+                case "S": return (int)DirectionsRover.Directions.S;
+                case "W": return (int)DirectionsRover.Directions.W;
+                default: return 0;
             }
         }
 
-        public int CommandRoverMoving(int direction, char[] commands, Positions setPositionRover, Size sizeMap)
+        public Rovers ConvertDirectionToString(int direction, Rovers positionRover)
+        {
+            switch (direction)
+            {
+                case 1:
+                    positionRover.Direction = DirectionsRover.Directions.N.ToString();
+                    break;
+                case 2:
+                    positionRover.Direction = DirectionsRover.Directions.E.ToString();
+                    break;
+                case 3:
+                    positionRover.Direction = DirectionsRover.Directions.S.ToString();
+                    break;
+                case 4:
+                    positionRover.Direction = DirectionsRover.Directions.W.ToString();
+                    break;
+                default:
+                    return new Rovers();
+            }
+            return positionRover;
+        }
+
+        public bool IsCheckFirstPositionOfRover(Size sizeMap, string dataRover)
+        {
+            var checkPositionStartRover = SetPositionRover(dataRover);
+            return ((checkPositionStartRover.Coordinate_X >= 0 && checkPositionStartRover.Coordinate_X <= sizeMap.X_Axis)
+                && (checkPositionStartRover.Coordinate_Y >= 0 && checkPositionStartRover.Coordinate_Y <= sizeMap.Y_Axis));
+        }
+
+        public bool IsCheckDirection(string dataRover)
+        {
+            var checkPositionStartRover = SetPositionRover(dataRover);
+            return (checkPositionStartRover.Direction.Equals("N")
+                || checkPositionStartRover.Direction.Equals("E")
+                || checkPositionStartRover.Direction.Equals("S")
+                || checkPositionStartRover.Direction.Equals("W"))
+                ? true : false;
+        }
+
+        public Rovers IsCheckLastedPositionOfRover(Size sizeMap, Rovers dataRover)
+        {
+            if ((dataRover.Coordinate_X < 0) || (dataRover.Coordinate_Y < 0) ||
+                (dataRover.Coordinate_X > sizeMap.X_Axis) || (dataRover.Coordinate_Y > sizeMap.Y_Axis))
+            {
+                dataRover.ErrorText = "Rover out of Plateau on Mars.";
+            }
+            return dataRover;
+        }
+
+        public Rovers IsCheckCaseError(bool checkPositionStartRover, bool checkDirectionInputRover, Rovers positionRover)
+        {
+            if (!checkPositionStartRover && !checkDirectionInputRover)
+            {
+                positionRover.ErrorText = "Rover's Direction and Position of the Rover is incorrect.";
+            }
+            else if (!checkPositionStartRover)
+            {
+                positionRover.ErrorText = "The beginning position of the Rover is incorrect.";
+            }
+            else if (!checkDirectionInputRover)
+            {
+                positionRover.ErrorText = "Wrong Input Rover's Direction.";
+            }
+            return positionRover;
+        }
+
+        public int CommandRoverMoving(int direction, char[] commands, Rovers setPositionRover, Size sizeMap)
         {
             var getDirection = direction;
             foreach (var command in commands)
@@ -97,85 +146,30 @@ namespace MarRover.Con
             return getDirection;
         }
 
-        public void RoverMoving(Positions setPositionRover, int getDirection, Size sizeMap)
+        public void RoverMoving(Rovers setPositionRover, int getDirection, Size sizeMap)
         {
             if ((setPositionRover.Coordinate_X <= sizeMap.X_Axis) && (setPositionRover.Coordinate_Y <= sizeMap.Y_Axis))
             {
-                if (getDirection == 1)
+                switch (getDirection)
                 {
-                    setPositionRover.Coordinate_Y = setPositionRover.Coordinate_Y + 1;
+                    case 1:
+                        setPositionRover.Coordinate_Y = setPositionRover.Coordinate_Y + 1;
+                        break;
+                    case 2:
+                        setPositionRover.Coordinate_X = setPositionRover.Coordinate_X + 1;
+                        break;
+                    case 3:
+                        setPositionRover.Coordinate_Y = setPositionRover.Coordinate_Y - 1;
+                        break;
+                    case 4:
+                        setPositionRover.Coordinate_X = setPositionRover.Coordinate_X - 1;
+                        break;
+                    default:
+                        break;
                 }
-                if (getDirection == 2)
-                {
-                    setPositionRover.Coordinate_X = setPositionRover.Coordinate_X + 1;
-                }
-                if (getDirection == 3)
-                {
-                    setPositionRover.Coordinate_Y = setPositionRover.Coordinate_Y - 1;
-                }
-                if (getDirection == 4)
-                {
-                    setPositionRover.Coordinate_X = setPositionRover.Coordinate_X - 1;
-                }
             }
         }
 
-        public char[] SetCommands(string firstCommandRover)
-        {
-            //Get Commands
-            return firstCommandRover.ToCharArray();
-        }
 
-        public int ConvertDirectionToInt(string position)
-        {
-            //Set Direction
-            var direction = 0;
-            if (position == "N")
-            {
-                direction = (int)DirectionsRover.Directions.N;
-            }
-            if (position == "E")
-            {
-                direction = (int)DirectionsRover.Directions.E;
-            }
-            if (position == "S")
-            {
-                direction = (int)DirectionsRover.Directions.S;
-            }
-            if (position == "W")
-            {
-                direction = (int)DirectionsRover.Directions.W;
-            }
-            return direction;
-        }
-
-        public string CheckCaseError(bool checkPositionStartRover1, bool checkDirectionInputRover1)
-        {
-            var errorTxt = "";
-            if (!checkPositionStartRover1 && !checkDirectionInputRover1)
-            {
-                errorTxt = "Rover1's Direction or beginning of the Rover1 is incorrect";
-            }
-            else if (!checkPositionStartRover1)
-            {
-                errorTxt = "The beginning of the Rover1 is incorrect.";
-            }
-            else if (!checkDirectionInputRover1)
-            {
-                errorTxt = "Wrong Input Rover1's Direction";
-            }
-
-            return errorTxt;
-        }
-
-        public Positions ProcessingControl(string firstRover, string firstCommandRover, Size sizeMap)
-        {
-            var setPositionRover = SetPositionRover(firstRover);
-            int direction = ConvertDirectionToInt(setPositionRover.Direction);
-            char[] commandsRover = SetCommands(firstCommandRover);
-            var latedDirection = CommandRoverMoving(direction, commandsRover, setPositionRover, sizeMap);
-            ConvertDirectionToString(latedDirection, setPositionRover);
-            return setPositionRover;
-        }
     }
 }
