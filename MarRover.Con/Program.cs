@@ -51,10 +51,9 @@ namespace MarRover.Con
 
                     //Rover's movement.
                     var directionNow = rover.CommandRoverMoving(direction, commandsRover, checkeDataRover, sizeMap);
-                    var lastedPosition = rover.ConvertDirectionToString(directionNow, checkeDataRover);
-
+                    
                     //Check the last position of Rover on plateau
-                    var result = rover.IsCheckLastedPositionOfRover(sizeMap, lastedPosition);
+                    var result = rover.IsCheckLastedPositionOfRover(sizeMap, directionNow);
 
                     //Display Result.
                     var displayResult = (string.IsNullOrEmpty(result.ErrorText)) ?

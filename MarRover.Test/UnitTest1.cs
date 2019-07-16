@@ -18,8 +18,7 @@ namespace MarRover.Test
             var setPositionRover = sut.SetPositionRover(position);
             var direction = sut.ConvertDirectionToInt(setPositionRover.Direction);
             var commandRover = sut.SetCommands(command);
-            var directionNow = sut.CommandRoverMoving(direction, commandRover, setPositionRover, setSize);
-            var result = sut.ConvertDirectionToString(directionNow, setPositionRover);
+            var result = sut.CommandRoverMoving(direction, commandRover, setPositionRover, setSize);
             result.Should().BeEquivalentTo(expected);
         }
 
